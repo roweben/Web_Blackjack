@@ -1,0 +1,43 @@
+<h2>Welcome to Blackjack!</h2>
+</br>
+ <table >
+  <tr >
+    <td colspan=<%= session[:d_cards].size %>> 
+      <h3>Dealer's cards</h3>
+        <h3>  Hand total = <%= if session[:turn] == 'player'
+            "TBD"
+            else
+              get_hand_value(session[:d_cards]) 
+            end %> </h3>
+
+    </td>
+    <td width=50>
+      &nbsp;
+    </td>
+    <td colspan=<%= session[:p_cards].size %>>
+      <h3> <%= session[:player_name] %>'s cards</h3>
+        <h3>  Hand total = <%= get_hand_value(session[:p_cards]) %> </h3>
+    </td>
+  </tr>
+    
+  <tr>
+      <%= get_html_for_image_names(session[:d_cards], 'dealer') %>
+
+     <td>
+      &nbsp;
+    </td>
+      <%= get_html_for_image_names(session[:p_cards], 'player') %>    
+</tr>
+  <tr>
+    <td colspan=<%= session[:d_cards].size %>> 
+    </td>
+    <td width=50>
+      &nbsp;
+    </td>
+    <td colspan=<%= session[:p_cards].size %>>
+      <form method="post">
+        <input type=submit value="Hit" name="hit"> 
+    <input type=submit value="Stay" name="stay">   </form>
+        </td>
+  </tr>
+  </table>
