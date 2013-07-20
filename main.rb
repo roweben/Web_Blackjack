@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'sinatra'
-require 'thin'
+#require 'thin'
 
 set :sessions, true
 
@@ -9,13 +9,13 @@ helpers do
   def get_hand_total(cards)
     total = 0
     cards.each do |card|
-      card_value = case card[1..card.size-1]
+      card_value = case card[1...card.size]
         when 'A' then 11   
         when 'K' then 10
         when 'Q' then 10
         when 'J' then 10
       else
-        card[1..card.size-1].to_i
+        card[1...card.size].to_i
       end 
         total += card_value 
     end
@@ -101,14 +101,14 @@ helpers do
 
   def get_html_for_image_names(cards, p_or_d)
     image_names = ''
-    for x in 0..cards.size-1
+    for x in 0...cards.size
       if p_or_d == 'dealer' && x == 0 && session[:turn] == 'player'
         image_names += "<td style=\"padding:5px; \"><img src=\"../images/cards/cover.jpg\" 
                       width=\"100\" height=\"150\" alt=\"First Card Not Shown\" /></td> "
       else
         card = cards[x] 
         suit = get_suit(card[0])
-        fv = get_face_value(card[1..card.size-1])
+        fv = get_face_value(card[1...card.size])
         image_names += "<td style=\"padding:5px; \"><img src=\"../images/cards/#{suit}_#{fv}.jpg\" 
                       width=\"100\" height=\"150\" alt=\"#{fv} of 
                       #{suit.capitalize}\" /></td> "
