@@ -3,7 +3,7 @@
 <% while session[:turn] == 'dealer' && get_hand_total(session[:d_cards]) < 17 #dealer must have minimum of 17
         deal_a_card(session[:d_cards])
   end %>
-<% if session[:turn] == 'dealer' && (get_hand_total(session[:d_cards]) < get_hand_total(session[:p_cards]))
+<% while session[:turn] == 'dealer' && (get_hand_total(session[:d_cards]) < get_hand_total(session[:p_cards]))
         deal_a_card(session[:d_cards])
   end %>
 
