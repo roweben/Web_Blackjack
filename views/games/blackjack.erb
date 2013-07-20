@@ -1,22 +1,51 @@
 <h2>Welcome to Blackjack!</h2>
 </br>
- <table >
-  <tr >
-    <td colspan=<%= session[:d_cards].size %>> 
-      <h3>Dealer's cards</h3>
-        <h3>  Hand total = <%= if session[:turn] == 'player'
-            "TBD"
-            else
-              get_hand_value(session[:d_cards]) 
-            end %> </h3>
-
+<% if session[:turn] == 'dealer' && get_hand_total(session[:d_cards]) < 17 #dealer must have minimum of 17
+        deal_a_card(session[:d_cards])
+  end %>
+<% status = session[:turn] == 'player' ? status_check(session[:p_cards], 'player') 
+      : status_check(session[:d_cards], 'dealer') %>
+<%= if session[:play_on] == 1 #if hand is over, display Play Again button
+      "<form method=\"post\">
+        <input type=\"submit\" style=\"font-size:16pt; background-color:lightgreen;\" 
+        value=\"Play Again\" name=\"play_again\">
+      </form>"
+    end %> 
+<%= session[:deck].size %>
+<table >
+ <tr>
+  <td colspan=<%= session[:d_cards].size %>> 
+    <h3>Dealer's cards</h3>
+      <h3>  <%= if session[:turn] == 'player'
+            "Hand total = TBD"
+            else # it's dealer's turn
+              if status == 'BLACKJACK' 
+              "Congrats, Dealer, BLACKJACK!!!"
+              elsif status == 'BUSTED'
+              "Dealer has #{get_hand_total(session[:d_cards])} -- he's busted.<br/> #{session[:player_name]} wins!"
+              elsif status == 'Dealer wins!!' || status == "It's a push!" 
+                "#{status}
+                </br> Dealer:  #{get_hand_total(session[:d_cards])} vs.  #{session[:player_name]}:  #{get_hand_total(session[:p_cards])}"
+              else
+               "Hand total = #{get_hand_total(session[:d_cards])}"  
+              end
+            end %>
+        </h3>
     </td>
     <td width=50>
       &nbsp;
     </td>
     <td colspan=<%= session[:p_cards].size %>>
       <h3> <%= session[:player_name] %>'s cards</h3>
-        <h3>  Hand total = <%= get_hand_value(session[:p_cards]) %> </h3>
+        <h3>  <%= if session[:turn] == 'player' && status == 'BLACKJACK' 
+                    "Congrats, #{session[:player_name]}, BLACKJACK!!!"
+                  elsif session[:turn] == 'player' && status == 'BUSTED'
+                    "Sorry, #{session[:player_name]}, you have #{get_hand_total(session[:p_cards])} -- you're busted."
+                  else
+                    "Hand total = #{get_hand_total(session[:p_cards])}"  
+                  end 
+                  %>
+                </h3>
     </td>
   </tr>
     
@@ -28,16 +57,39 @@
     </td>
       <%= get_html_for_image_names(session[:p_cards], 'player') %>    
 </tr>
+<tr>
+  <td>&nbsp;</td>
+  </tr>
   <tr>
     <td colspan=<%= session[:d_cards].size %>> 
+      <form method="post">
+        <input type="submit" style="text-align:center; font-size:16pt;" value=
+          <%= if session[:turn] == 'player'
+                "Dealer Turn"
+              else
+                "Dealer Takes A Card"
+              end %>
+                 name="dealer_turn" 
+          <%= if session[:turn] == 'player' || session[:play_on] == 1
+                "disabled=\"disabled\"" 
+              end %> >
+    </form>
     </td>
     <td width=50>
       &nbsp;
     </td>
     <td colspan=<%= session[:p_cards].size %>>
       <form method="post">
-        <input type=submit value="Hit" name="hit"> 
-    <input type=submit value="Stay" name="stay">   </form>
-        </td>
+        <input type="submit" style="width:100px; font-size:16pt; background-color:lightblue;" 
+        value="Hit" name="hit" <%= if session[:turn] == 'dealer' || session[:play_on] == 1
+                                                                        "disabled=\"disabled\"" 
+                                                                        end %> > 
+    <input type="submit" style="width:100px;font-size:16pt; font-color:orange; "
+     value="Stay" width="100" name="stay" <%= if session[:turn] == 'dealer' || session[:play_on] == 1
+                                                                        "disabled=\"disabled\"" 
+                                                                        end %> >   
+       </form>
+    </td>
   </tr>
   </table>
+
